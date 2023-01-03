@@ -1,0 +1,47 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Edit Profile | {% endblock %}
+
+{% block content %}
+
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url('https://images.unsplash.com/photo-1531592937781-344ad608fabf?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=80')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="page-heading">
+            <h1>Edit Profile</h1>
+            {% comment %} <span class="subheading">Start Contributing to the Blog!</span> {% endcomment %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <style>
+    .errorlist {
+      color:red;
+      font-size: 14px;
+    }
+  </style>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="form-group shadow p-4 mb-5 bg-body rounded">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ user_form.as_p }}
+            {{ profile_form.as_p }}
+            <input type="hidden" name="username" value="{{ user.username }}">
+            <input type="submit" value="Save" class="btn btn-primary">
+          </form>
+          <br>
+          <small>Click <a href="{% url 'change_password' %}">Here</a> to change password.</small><br>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

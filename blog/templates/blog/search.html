@@ -1,0 +1,53 @@
+{% extends 'blog/base.html' %} 
+{% load static %}
+{% comment %} {% include "blog/header.html" %} {% endcomment %}
+
+{% block title %}Search | {% endblock %}
+
+{% block content %}
+
+  <!-- Page Header -->
+<header class="masthead" style="background-image: url('/static/images/other.png')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="site-heading">
+            <h1>Search results</h1>
+            <span class="subheading">Showing search results for "{{ query }}"</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        {% if posts %}
+          {% for post in posts %}
+            <div class="post-preview form-group shadow p-3 mb-4 bg-body rounded"">
+              <a href="{% url 'blog:post_detail' post.pk %}" style="text-decoration:none">
+                <h2 class="post-title" style="margin:10px">
+                  {{post.title}}
+                </h2>
+                <h3 class="post-subtitle" style="margin:10px">
+                  {{post.subtitle}}
+                </h3>
+              </a>
+              <small style="margin:10px;"><a href="{% url 'blog:categories' post.category %}">{{post.category|title}}</a></small>
+              <p class="post-meta" style="margin:10px; font-size:14px;">Posted by <a href="{% url 'blog:user_posts' post.author.username %}">{{post.author.username}}</a> on {{post.date}}</p>
+            </div>
+          {% endfor %}
+        {% else %}
+          No results found for "{{ query }}".
+        {% endif %}
+        
+      </div>
+    </div>
+  </div>
+  <br>
+  <hr>
+{% endblock %}
+{% comment %} {% include "blog/footer.html" %} {% endcomment %}

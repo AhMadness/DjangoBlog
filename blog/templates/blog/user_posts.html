@@ -1,0 +1,99 @@
+{% extends 'blog/base.html' %} 
+{% load static %}
+{% comment %} {% include "blog/header.html" %} {% endcomment %}
+
+{% block title %}{{ user.username|title }} | {% endblock %}
+
+{% block content %}
+  <!-- Page Header -->
+  {% if host.userprofile.bg %} 
+    <header class="masthead" style="background-image: url({{ host.userprofile.bg.url }})">
+  {% else %}
+    <header class="masthead" style="background-image: url({% static 'images/default_bg.png' %})">
+  {% endif %}
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="site-heading">
+            <h1>{{ host.username|title }}'s Profile</h1>
+            {% if user.username == host.username %}
+              <span class="subheading">Welcome back {{user.first_name|title}} {{user.last_name|title}}!</span>
+            {% else %}
+              <span class="subheading">Viewing {{host.first_name|title}}'s posts.</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="card mb-3">
+          <div class="row no-gutters">
+            <div class="col-md-3">
+                  {% if host.userprofile.pfp %} 
+                      <img src="{{ host.userprofile.pfp.url }}" class="card-img" alt="...">
+                  {% else %}
+                      <img src="{% static 'images/default_img.jpg' %}" class="card-img" alt="...">
+                  {% endif %}
+            </div>
+            <div class="col-md-9">
+              <div class="card-body">
+                <hS class="card-title"><strong>{{ host.first_name|title }} {{host.last_name|title }}</strong>  <a style="text-decoration:none; color:grey;"> @{{host.username}}</a></hs>
+                  <br>
+                <p class="card-text" style="margin-top:15px; margin-bottom:10px;">{{ host.userprofile.bio }}</p>
+                      {% comment %} <p class="small text-muted"> {% endcomment %}
+                          {% comment %} {% if post.author.profile.website %}
+                              <a href="{{ post.author.profile.website }}">Website |</a>
+                          {% endif %}
+                          Facebook | Twitter | Instagram | LinkedIn {% endcomment %}
+                      {% comment %} </p> {% endcomment %}
+                {% if user.username == host.username %}
+                  <a href="{% url 'edit_profile' %}" class="btn btn-primary" style="float:right; position:absolute; right:0; bottom:0; margin:8px;">Edit Profile</a>
+                {% endif %}
+              </div>
+              <p class="md-7" style="margin:0px 0px 10px 16px; position:absolute; bottom:0; color:grey; font-size:14px;">Joined on {{host.date_joined}}</p>       
+            </div>
+          </div>
+        </div>
+        <br>              
+        {% if not user_posts %}
+            <div class="post-preview">
+                <p>You have no posts to show.</p>
+            </div>
+        {% else %}
+            {% for post in user_posts %}
+                <div class="post-preview form-group shadow p-3 mb-4 bg-body rounded"">
+                    <a href="{% url 'blog:post_detail' post.pk %}" style="text-decoration:none">
+                    <h2 class="post-title" style="margin:10px">
+                        {{post.title}}
+                    </h2>
+                    <h3 class="post-subtitle" style="margin:10px">
+                        {{post.subtitle}} 
+                    </h3>
+                    </a>
+                    <small style="margin:10px;"><a href="{% url 'blog:categories' post.category %}">{{post.category|title}}</a></small>
+                    <p class="post-meta" style="margin:10px; font-size:14px;">Posted by <a href="{% url 'blog:user_posts' post.author.username %}">{{post.author.username}}</a> on {{post.date}}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- New Post -->
+{#      If user id is 1 then they can see the Create New Post button #}
+        {% if user.username == host.username %}
+            <div class="clearfix">
+              <a class="btn btn-primary float-right" style="float:right;" href="{% url 'blog:new_post' %}">Create New Post</a>
+            </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+  <hr>
+
+{% endblock %}
+{% comment %} {% include "blog/footer.html" %} {% endcomment %}

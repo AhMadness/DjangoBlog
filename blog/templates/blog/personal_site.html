@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>My Site</title>
+    <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
+    {% comment %} <link rel="icon" href="../static/favicon.ico"> {% endcomment %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Montserrat&family=Sacramento&display=swap" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+
+    <div class="top-container">
+      <!-- <img class="top-cloud" src="images/cloud.png" alt="cloud-img"> -->
+      <h1 class="name">Ahmad Jomaa</h1>
+      <h2 class="title">Software Engineer</h2>
+      <div class="container">
+        <img class="cpu" src="{% static 'blog/images/site/cpu.png' %}" alt="cpu-img">
+        <div class="zero">
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+          <span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span>
+          <span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span><span>1</span><span>0</span>
+        </div>
+      </div>
+      <!-- <hr class="separate"> -->
+      <!-- <img class="bottom-cloud" src="images/cloud.png" alt="cloud-img" /> -->
+      <img class ="main-img" src="{% static 'blog/images/site/1.png' %}" alt="main-img">
+    </div>
+
+    <div class="middle-container">
+      <div class="profile">
+        <img class="ahmad" src="{% static 'blog/images/site/ahmad.png' %}" alt="profile-img">
+        <h2>Hello.</h2>
+        <p class="intro">Enthusiastic software engineer with a solid background in computer literacy. 
+          Worked with several software projects including front & back-end web & app development.</p>
+      </div>
+      <hr>
+      <div class="skills">
+        <h2>My Skills.</h2>
+        <div class="skill-row">
+          <img class="programming" src="{% static 'blog/images/site/programming.png' %}" alt="programming-img">
+          <h3>Lorem & Ipsum</h3>
+          <p>Lorem ipsum dolor sit amet, quis in duis, iaculis id felis. Consectetuer vestibulum, nunc urna lectus, erat ligula. Hendrerit nam, lectus ante, ut lorem eros.</p>
+        </div>
+        <div class="skill-row">
+          <img class="programming2" src="{% static 'blog/images/site/programming.png' %}" alt="programming-img">
+          <h3>Lorem Ipsum Dolor</h3>
+          <p>Lorem ipsum dolor sit amet, mauris sed consectetuer. Etiam et eu, bibendum interdum, lacus quis mauris. Curabitur wisi, quisque vel eu, rutrum nam.</p>
+        </div>
+        <div class="skill-row">
+          <img class="programming3" src="{% static 'blog/images/site/programming.png' %}" alt="programming-img">
+          <h3>Lorem & Ipsum</h3>
+          <p>Lorem ipsum dolor sit amet, quis in duis, iaculis id felis. Consectetuer vestibulum, nunc urna lectus, erat ligula. Hendrerit nam, lectus ante, ut lorem eros.</p>
+        </div>
+      </div>
+      <hr>
+
+      <div class="contact-me">
+        <h2>Get In Touch</h2>
+        <h3 style="font-family: Montserrat; font-weight:500;">Have questions? I have answers!</h3>
+        <p class="contact-message">Press the button below to send me a message and I will get back to you as soon as possible!</p>
+        <a class="btn" href="{% url 'blog:contact' %}">CONTACT ME</a>
+      </div>
+    </div>
+
+
+    <div class="bottom-container">
+      <a class="footer-link" href="https://www.linkedin.com/in/ahmad-jomaa-950630191/" target="_blank">LinkedIn</a>
+      <a class="footer-link" href="{% url 'blog:home' %}">Website</a>
+      <a class="footer-link" href="https://github.com/AhMadness" target="_blank">GitHub</a>
+      <p class="copyrights">© 2022 Ahmad Jomaa</p>
+    </div>
+
+  </body>
+</html>

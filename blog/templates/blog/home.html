@@ -1,0 +1,127 @@
+{% extends 'blog/base.html' %} 
+{% load static %}
+{% comment %} {% include "blog/header.html" %} {% endcomment %}
+
+{% block title %}Home | {% endblock %}
+
+{% block content %}
+  <!-- Page Header -->
+  <section class="colored-section" id="testimonials">
+    <div id="testimonial-carousel" class="carousel slide" data-bs-interval="5000" data-bs-pause="hover" data-bs-ride="carousel">
+      <div class="carousel-inner">
+
+        <div class="carousel-item active">
+          <header class="masthead" style="background-image: url({% static 'blog/images/abstract-blue.webp' %})">
+            <div class="overlay"></div>
+            <div class="container">
+              <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                  <div class="site-heading">
+                    <h1>Friday's Blog</h1>
+                    <span class="subheading">Life, Liberty & the Pursuit of Happiness.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+        </div>
+
+        <div class="carousel-item">
+          <header class="masthead" style="background-image: url({% static 'blog/images/techcity.jpg' %})">
+            <div class="overlay"></div>
+            <div class="container">
+              <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                  <div class="site-heading">
+                    <h1>Friday's Blog</h1>
+                    <span class="subheading">Science, Technology & the Pursuit of Progress.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+        </div>
+
+        <div class="carousel-item active">
+          <header class="masthead" style="background-image: url({% static 'blog/images/wow.jpg' %})">
+            <div class="overlay"></div>
+            <div class="container">
+              <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                  <div class="site-heading">
+                    <h1>Friday's Blog</h1>
+                    <span class="subheading">Me, Myself & the Pursuit of I.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+        </div>
+
+      </div>
+      <a class="carousel-control-prev" href="#testimonial-carousel" role="button" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </a>
+      <a class="carousel-control-next" href="#testimonial-carousel" role="button" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </a>
+
+    </div>
+  </section>
+  {% comment %} <header class="masthead" style="background-image: url({% static 'blog/images/abstract-blue.webp' %})">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="site-heading">
+            <h1>Friday's Blog</h1>
+            <span class="subheading">Life, Liberty & the Pursuit of Happiness.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header> {% endcomment %}
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        {% for post in posts %}
+        <div class="post-preview form-group shadow p-3 mb-4 bg-body rounded">
+          {% comment %} <a href="/blog/post/{{post.id}}"> {% endcomment %}
+          <a href="{% url 'blog:post_detail' post.pk %}" style="text-decoration:none">
+            <h2 class="post-title" style="margin:10px">
+              {{post.title}}
+            </h2>
+            <h3 class="post-subtitle" style="margin:10px">
+              {{post.subtitle}} 
+            </h3>
+          </a>
+          <small style="margin:10px;"><a href="{% url 'blog:categories' post.category %}">{{post.category|title}}</a></small>
+          <p class="post-meta" style="margin:10px; font-size:14px;">Posted by <a href="{% url 'blog:user_posts' post.author.username %}">{{post.author.username}}</a> on {{post.date}}</p>
+{#          Changed from post.author as post.author is now a User object. #}
+
+{#          If user id is 1 then they can see the delete button #}
+            {% comment %} {% if user.id == 1 %}
+                <a href="">✘</a>
+            {% endif %} {% endcomment %}
+        </div>
+        {% endfor %}
+
+
+        <!-- New Post -->
+{#      If user id is 1 then they can see the Create New Post button #}
+        {% if user.is_authenticated %}
+            <div class="clearfix">
+              <a class="btn btn-primary float-right" style="float:right;" href="{% url 'blog:new_post' %}">Create New Post</a>
+            </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+  <br>
+  <hr>
+
+{% endblock %}
+{% comment %} {% include "blog/footer.html" %} {% endcomment %}

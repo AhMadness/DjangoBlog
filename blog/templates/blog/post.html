@@ -1,0 +1,205 @@
+{% extends "blog/base.html" %}
+{% load static %}
+
+{% comment %} {% extends 'bootstrap/base.html' %}
+{% import "bootstrap/wtf.html" as wtf %} {% endcomment %}
+
+{% block title %}{{post.title}} | {% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+
+{% if post.img %}
+    <header class="masthead" src="{{ post.img.url }}" style="background-image: url({{post.img.url}})">
+        {% comment %} <img src="{{ post.img.url }}" alt="logo" /> {% endcomment %}
+{% else %}
+    <header class="masthead" src="">
+{% endif %}
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="post-heading">
+                    <h1>{{post.title}}</h1>
+                    <h2 class="subheading">{{post.subtitle}}</h2>
+                    <span class="meta">Posted by
+              {#Changed from post.author#}
+              {{post.author.username}}
+              on {{post.date}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                {{ post.body|safe }}
+                <hr>
+
+                <div class="card mb-3">
+                    <div class="row no-gutters">
+                        <div class="col-md-3">
+                            {% if post.author.userprofile.pfp %} 
+                                <a href="{% url 'blog:user_posts' post.author.username %}"><img src="{{ post.author.userprofile.pfp.url }}" class="card-img" alt="..."></a>
+                            {% else %}
+                                <a href="{% url 'blog:user_posts' post.author.username %}"><img src="{% static 'images/default_img.jpg' %}" class="card-img" alt="..."></a>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card-body">
+                                <hS class="card-title"><strong>{{ post.author.first_name|title }} {{post.author.last_name|title }}</strong> <a href="{% url 'blog:user_posts' post.author.username %}" style="text-decoration:none; color:grey;"> @{{post.author.username}}</a></hs>
+                                <p class="card-text" style="margin-top:15px">{{ post.author.userprofile.bio }}</p>
+                                <p class="small text-muted">
+                                    {% comment %} {% if post.author.profile.website %}
+                                        <a href="{{ post.author.profile.website }}">Website |</a>
+                                    {% endif %}
+                                    Facebook | Twitter | Instagram | LinkedIn {% endcomment %}
+                                </p>
+                            </div>
+                            <p class="small card-text" style="margin:0px 0px 10px 16px;; position:absolute; bottom:0;"><small class="text-muted">Last modified {{post.last_modified|timesince }} ago.</small></p>
+                        </div>
+                    </div>
+                </div> 
+
+                <hr>
+
+                {% if user.id == post.author.id or user.id == 1 %}   {# for admin only #}
+                    <a class="btn btn-danger float-right" style="float:right;" href="{% url 'blog:remove_post' post.pk %}">Delete Post</a>
+                    <a class="btn btn-primary float-right" style="float:right; margin-right:10px;" href="{% url 'blog:edit_post' post.pk %}">Edit Post</a>
+                {% endif %}
+              
+
+{#              Likes  #}
+                <div class="form-group"> 
+                    <form action="{% url 'blog:like_post' post.pk %}" method="POST">
+                        {% csrf_token %}
+                        {% if user.is_authenticated %} 
+                            {% if not liked %}
+                                <button type="submit" name="post_id", value="{{ post.id }}" class="btn btn-primary btn-sm">Like <i class="fa-regular fa-thumbs-up"></i></button> 
+                            {% else %}
+                                <button type="submit" name="post_id", value="{{ post.id }}" class="btn btn-primary btn-sm">Unlike <i class="fa-regular fa-thumbs-down"></i></button> 
+                            {% endif %}
+                        {% else %}
+                            <small><a href="{% url 'login' %}">Login</a> to like!</small>
+                        {% endif %}
+                        {% if total_likes != 1 %}
+                            | {{total_likes}} likes
+                        {% else %}
+                            | {{total_likes}} like
+                        {% endif %}
+                    </form> 
+                    
+<!--            Comments Area -->
+                    <p style="font-size:24px; margin-bottom:20px;">Comments</p>
+                    {% if not post.comments.all %}
+                        <p style="font-size:18px; margin-top:0px; margin-bottom:40px;">No comments yet. Be the first to comment!</p>
+                    {% else %}
+                        {% for comment in post.comments.all %}              
+                            <div class="row">
+                                <div class="col-10">
+                                    <div class="form-group shadow p-3 mb-0 bg-body rounded">
+                                        <div class="d-flex flex-start">
+                                            {% if comment.commentor.userprofile.pfp %} 
+                                                <a href="{% url 'blog:user_posts' comment.commentor.username %}">
+                                                    <img class="rounded-circle shadow-1-strong me-3" style="margin:10px" src="{{comment.commentor.userprofile.pfp.url}}" alt="avatar" width="65" height="65" />
+                                                </a>
+                                            {% else %}
+                                                <img class="rounded-circle shadow-1-strong me-3" style="margin:10px" src="{% static 'images/default_img.jpg' %}" alt="avatar" width="65" height="65" />
+                                            {% endif %}
+                                            <div class="flex-grow-1 flex-shrink-1">
+                                                <div>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <p class="mb-1" style="margin:15px 0px 0px; font-size:16px;">
+                                                        {{comment.commentor.first_name|title }} {{comment.commentor.last_name|title }} 
+                                                        <a href="{% url 'blog:user_posts' comment.commentor.username %}" style="text-decoration:none; color:grey;"> @{{comment.commentor.username}}</a>
+                                                        <span class="small" style="color:grey; font-size:10;">- {{comment.comment_date|timesince }} ago</span>
+                                                        </p>
+                                                        {% comment %} {% if request.user == comment.commentor or user.is_superuser %}
+                                                            <div style="margin-right:10px">
+                                                                <a href="{% url 'blog:remove_comment' post.pk comment.pk %}" class="link-muted" style="text-decoration:none; color:grey; font-size:12px;">Remove</a>
+                                                            </div>
+                                                        {% endif %} {% endcomment %}
+                                                    </div>
+                                                    <p class="small mb-0" style="margin-top:10px; margin-right:100px; margin-bottom:10px">
+                                                        {{comment.body|safe}}
+                                                    </p>
+                                                    {% comment %} <hr style="height:0px; visibility:hidden;" /> {% endcomment %}
+                                                    <br style="line-height: 0px" />
+                                                    {% if request.user == comment.commentor or user.is_superuser %}
+                                                        <div style="margin-right:10px">
+                                                            <a href="{% url 'blog:remove_comment' post.pk comment.pk %}" class="link-muted" style="text-decoration:none; float:right; color:grey; font-size:12px;"> Remove</a>
+                                                            <a href="{% url 'blog:edit_comment' post.pk comment.pk %}" class="link-muted" style="text-decoration:none; margin-right:10px; float:right; color:grey; font-size:12px;">Edit </a>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>  
+                                    </div>
+                                </div>
+                            </div>
+                            <br style="line-height: 0px" />
+                        {% endfor %}
+                    {% endif %}
+
+                        
+                    <div class="card border-0">
+                        <div class="row">
+                            <div class="col-1">
+                                {% if user.userprofile.pfp %} 
+                                    <a href="{% url 'blog:user_posts' user.username %}">
+                                     <img class="rounded-circle mt-2" style="margin:10px" src="{{user.userprofile.pfp.url}}" alt="avatar" width="65" height="65" />
+                                    </a>
+                                 {% else %}
+                                    <img class="rounded-circle mt-2" style="margin:10px" src="{% static 'images/default_img.jpg' %}" alt="avatar" width="65" height="65" />
+                                {% endif %}
+                            </div>
+                            <div class="col-7" style="margin-left:20px">
+                                <div class="comment-box ml-2">
+                                    {% if user.is_authenticated %}
+                                        <p style="margin-top:10px; margin-bottom:20px; font-size:16px">{{user.first_name|title}} {{user.last_name|title}}<a href="{% url 'blog:user_posts' user.username %}" style="text-decoration:none; color:grey;"> @{{user.username}}</a></p>
+                                    {% else %}
+                                        <p style="margin-top:10px; margin-bottom:0px; font-size:18px;">You need to <a style="text-decoration:underline;" href="{% url 'login' %}">Login</a> to post a comment.</p>
+                                        <p style="margin-top:0px; margin-bottom:20px; font-size:14px;">Dont't have an account?<a style="text-decoration:underline;" href="{% url 'signup' %}"> Register</a></p>
+                                    {% endif %}
+                                    <div class="comment-area">
+                                        <form method="post">
+                                            {% csrf_token %}
+                                            {% comment %} {{ form.media }} {% endcomment %}
+                                            {{ form }}
+                                            
+                                            {% if user.is_authenticated %}
+                                                <button class="btn btn-primary" style="float:right; margin-top:15px;">Post Comment</button>
+                                            {% else %}
+                                                <a href="{% url 'login' %}" class="btn btn-primary" style="float:right; margin-top:15px;">Post Comment</a>
+                                            {% endif %}
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="col-lg-8 col-md-10 mx-auto comment" style="padding-left: 0;"> 
+                    <ul class="commentList">
+                        <li>
+                            <div class="commenterImage">
+                            </div>
+                            <div class="commentText">
+                                <span class="date sub-text">{{comment.comment_author.name}}</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <a class="btn btn-primary float-right" style="float: right;" href="{% url 'blog:home' %}">Back</a>
+            </div>
+        </div>
+    </div>
+</article>
+
+<hr>
+{% endblock %}

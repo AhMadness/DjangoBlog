@@ -1,0 +1,66 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block title %}
+  {% if "/new_post/" in request.path %}   
+    New Post |
+  {% else %}
+    Edit Post |
+  {% endif %}
+{% endblock %}
+
+{% comment %} {% extends 'bootstrap/base.html' %}
+
+{#Add import for bootstrap wtf quickform support#}
+{% import "bootstrap/wtf.html" as wtf %} {% endcomment %}
+
+{% block content %}
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url({% static 'blog/images/edit-bg.jpg' %})">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="page-heading">
+
+<!--        IF statement to differentiate Add and Edit-->
+            {% if "/new_post/" in request.path %}
+                <h1>New Post</h1>
+            {% else %}
+                <h1>Edit Post</h1>
+            {% endif %}
+            {#  <h1>{% if request.endpoint == "new_post" %} New Post{% else %} Edit Post{% endif %} </h1> #}
+            {#  <h1>{% if request.path == "/new-post" %} New Post{% else %} Edit Post{% endif %} </h1> #}
+
+            <span class="subheading">You're going to make a great blog post!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="form-group">
+          <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if comment %}
+              {{ form.as_p }}
+            {% else %}
+              {{ form.media }}
+              {{ form.as_p }}
+            {% endif %}
+            <input type="submit" class="btn btn-primary" value="Update">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+
+
+
+

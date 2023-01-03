@@ -1,0 +1,56 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Login | {% endblock %}
+
+{% block content %}
+
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url('https://images.unsplash.com/photo-1484100356142-db6ab6244067?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=80')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="page-heading">
+            <h1>Log In</h1>
+            <span class="subheading">Welcome Back!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto content">
+        <div class="form-group shadow p-4 mb-5 bg-body rounded">
+          
+          {% if messages %}
+            <ul class="messages">
+              {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><small style="color:limeGreen;">{{ message }}</small></li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+          
+          <form method="post">
+            {% csrf_token %}
+            {% if form.errors %}
+              <small style="color:red;">Incorrect username or password. Please try again.</small>
+            {% endif %}
+            <div class="mb-3">
+              <label class="form-label">Username</label>
+              <input type="text" class="form-control" name="username" placeholder="Username">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" class="form-control" name="password" placeholder="Password">
+            </div>
+            <input type="submit" value="Log In" class="btn btn-primary"><br>
+            <small>Not a member? Register <a href="{% url 'signup' %}">Here</a>.</small>
+          </form>
+        </div>
+    </div>
+  </div>
+
+
+{% endblock %}

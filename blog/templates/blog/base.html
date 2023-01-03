@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>{% block title %}{% endblock %}Friday's Blog</title>
+
+{# Add Favicon #}
+  <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+
+  <!-- Bootstrap core CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+  <!-- Custom fonts for this template -->
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Link -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+
+  <!-- Custom styles for this template -->
+  <link href="{% static 'blog/css/clean-blog.css' %}" rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'blog:home' %}">Friday's Blog</a>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="#navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
+          <ul class="dropdown-menu">
+            {% for category in all_categories %}
+              <li><a class="dropdown-item" href="{% url 'blog:categories' category|slugify %}">{{ category|title }}</a></li>
+            {% endfor %}
+          </ul>
+        </li>  
+        <li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-magnifying-glass"></i></a>
+          <ul class="dropdown-menu">
+            <li>
+              <form method="get" action="{% url 'blog:search' %}" class="form-inline my-2 my-lg-0">
+                <input class="form-control" name="query" type="search" placeholder="Search..." aria-label="Search">  
+              </form>
+            </li> 
+          </ul>
+        </li>  
+      </ul>
+
+        {% comment %} NESTED DROPDOWNS WITH CATEGORIES AND SEARCH {% endcomment %}
+        {% comment %} <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+         <li class="nav-item dropdown">
+          <a class="nav-link py-3 px-4 dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside">Search</a>
+          <ul class="dropdown-menu mt-0 shadow">
+            <li class="dropend">
+                <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside">Categories</a>
+                <ul class="dropdown-menu shadow">
+                  {% for category in all_categories %}
+                    <li><a class="dropdown-item" href="{% url 'blog:categories' category|slugify %}">{{ category|title }}</a></li>
+                  {% endfor %}
+                </ul>
+            </li>
+            <li>
+                <hr class="dropdown-divider">
+            </li>
+            <li> 
+              <form method="get" action="{% url 'blog:search' %}" class="form-inline my-2 my-lg-0">
+                <input class="form-control" name="query" type="search" placeholder="Search" aria-label="Search">         
+              </form>
+            </li>
+          </ul>
+        </li>
+      </ul> {% endcomment %}
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'personal_site' %}">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'blog:contact' %}">Contact</a>
+          </li>
+          {% if not user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'signup' %}">Register</a>
+            </li>
+          {% else %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{user.username}}</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'blog:new_post' %}">New Post</a></li>
+                <li><a class="dropdown-item" href="{% url 'blog:user_posts' user.username %}">User Profile</a></li>
+                <div class="dropdown-divider"></div>
+                <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Edit Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>
+              </ul>
+            </li>
+            {% comment %} <li class="nav-item">
+              {# <a class="nav-link" href="/blog/profile/{{user.username}}">{{user.username}}</a> #}
+              <a class="nav-link" href="{% url 'blog:user_posts' user.username %}">{{user.username}}</a></li> {% endcomment %}
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  {% block content %}
+  {% endblock %}
+
+{% comment %} Footer {% endcomment %}
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            <li class="list-inline-item">
+              <a href="https://twitter.com/" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <a href="https://github.com/AhMadness" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <a href="https://www.linkedin.com/in/ahmad-jomaa-950630191/" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+            </li>
+          </ul>
+          {% comment %} <p class="copyright text-muted"><a href="{% url 'personal_site' %}">Click here for more!</a></p> {% endcomment %}
+          <p class="copyright text-muted">Copyright &copy; Ahmad Jomaa 2022</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+  <script src="{% static 'blog/js/scripts.js' %}"></script>
+
+  <!-- Custom scripts for this template -->
+  {% comment %} <script src="{{ url_for('static', filename='js/clean-blog.min.js')}}"></script> {% endcomment %}
+
+</body>
+
+</html>
+

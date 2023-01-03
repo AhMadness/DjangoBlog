@@ -1,0 +1,50 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block title %} Confirm Delete |{% endblock %}
+
+{% comment %} {% extends 'bootstrap/base.html' %} {% endcomment %}
+
+{% block content %}
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url({% static 'blog/images/edit-bg.jpg' %})">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="page-heading">
+            <h1>Confirm Delete</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="form-group">
+          <form action="" method="POST">
+            {% csrf_token %}
+            {% if comment %}
+              <p>Are you sure you want to delete the following comment?</p>
+              <p>"{{ comment.body }}" - {{comment.commentor}}</p>
+            {% else %}
+              <p>Are you sure you want to delete the following post?</p>
+              <p>"{{post.title}}" by {{post.author.username}}</p>
+            {% endif %}
+            <a class="btn btn-primary float-right" href="{% url 'blog:post_detail' post.pk %}">Cancel</a>
+            <input type="submit" class="btn btn-danger" value="Delete"><br>
+            <small style="color:red;">Warning: Once this action is taken, it cannot be undone.</small>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+
+
+
+

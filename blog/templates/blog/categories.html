@@ -1,0 +1,71 @@
+{% extends 'blog/base.html' %} 
+{% load static %}
+{% comment %} {% include "blog/header.html" %} {% endcomment %}
+
+{% block title %}
+    {% if list_by_category %}  
+        {{ genre|title }} |
+    {% else %}
+        Invalid Page |
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+  <!-- Page Header -->
+{% if request.resolver_match.kwargs.genre in all_categories %}
+  {% with request.resolver_match.kwargs.genre|add:".png" as url %}
+    <header class="masthead" style="background-image: url('/static/images/{{url}}')">
+  {% endwith %} 
+{% else %}
+  <header class="masthead" style="background-image: url({% static 'images/404.png' %})">
+{% endif %}
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="site-heading">
+            {% if request.resolver_match.kwargs.genre in all_categories %}
+                <h1>{{ genre|title }}</h1>
+                <span class="subheading">Showing results for "{{ genre|title }}"</span>
+            {% else %}
+                <h1>Error 404</h1>
+                <span>Page not found.</span>
+            {% endif %} 
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        {% if list_by_category %}
+          {% for post in list_by_category %}
+            <div class="post-preview form-group shadow p-3 mb-4 bg-body rounded"">
+              <a href="{% url 'blog:post_detail' post.pk %}" style="text-decoration:none">
+                <h2 class="post-title" style="margin:10px">
+                  {{post.title}}
+                </h2>
+                <h3 class="post-subtitle" style="margin:10px">
+                  {{post.subtitle}}
+                </h3>
+              </a>
+              <p class="post-meta" style="margin:10px; font-size:14px;">Posted by <a href="{% url 'blog:user_posts' post.author.username %}">{{post.author.username}}</a> on {{post.date}}</p>
+            </div>
+          {% endfor %}
+        {% elif request.resolver_match.kwargs.genre not in all_categories %}
+            <a href="{% url 'blog:home' %}" class="btn btn-primary" style="margin-left:40%;">Go Home</a>
+        {% else %}
+          No posts yet. Click <a href="{% url 'blog:new_post' %}">Here</a> to add.
+        {% endif %}
+        
+      </div>
+    </div>
+  </div>
+  <br>
+  <hr>
+{% endblock %}
+{% comment %} {% include "blog/footer.html" %} {% endcomment %}
