@@ -70,21 +70,6 @@ def contact_view(request):
         form = ContactForm(initial=initial_data)
     return render(request, 'blog/contact.html', {'form': form})
 
-# def detail(request, slug):
-#     post = get_object_or_404(BlogPost, slug=slug)
-#     if request.method == "POST":
-#         form = CommentForm(request.POST)
-#         if form.is_valid():
-#             comment = form.save(commit=False)
-#             comment.post = post
-#             comment.save()
-            
-#             return redirect("post_detail", slug=slug)
-#         else:
-#             form = CommentForm()
-            
-#     return render(request, "blog/post,html", {"post":post})
-
 class PostView(FormMixin, DetailView):
     template_name = "blog/post.html"
     model = BlogPost
@@ -122,20 +107,6 @@ class PostView(FormMixin, DetailView):
         comment.save()
         return redirect("blog:post_detail", self.object.id)
     
-# def CommentView(request, pk):
-#     post = get_object_or_404(BlogPost, id=request.POST.get('post_id'))
-#     if request.method == "POST":
-#         form = CommentForm(request.POST)
-#         if form.is_valid():
-#             comment = form.save(commit=False)
-#             comment.post = post
-#             comment.save()
-#             return redirect("blog:post_detail", pk=pk)
-#     else:
-#         form = CommentForm()
-#     return render(request, "blog:post_detail", {"pk":pk, "form":form})
-    
-
 # CREATE POST
 class NewPostView(LoginRequiredMixin, CreateView):
     model = BlogPost
@@ -183,21 +154,6 @@ def update_comment(request, post_pk, comment_pk):
         form = CommentForm(instance=comment)
     return render(request, 'blog/edit_post.html', {"form":form})
 
-# def post(self, request, *args, **kwargs):
-#         self.object = self.get_object()
-#         form = self.get_form()
-#         if form.is_valid():
-#             return self.form_valid(form)
-#         else:
-#             return self.form_invalid(form)
-    
-#     def form_valid(self, form):
-#         form.instance.post = self.object
-#         form.instance.commentor = self.request.user
-#         comment = form.save(commit=False)
-#         comment.save()
-#         return redirect("blog:post_detail", self.object.id)
-    
     
 # DELETE COMMENT
 def delete_comment(request, post_pk, comment_pk):
@@ -241,10 +197,11 @@ def LikeView(request, pk):
 
 
 # REGISTER
-class SignUpView(CreateView):
+class SignUpView(SuccessMessageMixin, CreateView):
     form_class = UserRegisterForm
     template_name = "registration/signup.html"
     success_url = reverse_lazy("login")
+    success_message = 'Account created successfully! Please login.'
     
     
 # Edit PROFILE
@@ -280,7 +237,6 @@ def edit_profile(request):
 
 
 # CHANGE PASSWORD 
-from django.contrib.auth import logout
 class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
     # form_class = PasswordChangeForm
     form_class = ChangePasswordForm
