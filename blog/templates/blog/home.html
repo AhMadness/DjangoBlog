@@ -87,26 +87,23 @@
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
         {% for post in posts %}
-        <div class="post-preview form-group shadow p-3 mb-4 bg-body rounded">
-          {% comment %} <a href="/blog/post/{{post.id}}"> {% endcomment %}
-          <a href="{% url 'blog:post_detail' post.pk %}" style="text-decoration:none">
-            <h2 class="post-title" style="margin:10px">
-              {{post.title}}
-            </h2>
-            <h3 class="post-subtitle" style="margin:10px">
-              {{post.subtitle}} 
-            </h3>
-          </a>
-          <small style="margin:10px;"><a href="{% url 'blog:categories' post.category %}">{{post.category|title}}</a></small>
-          <p class="post-meta" style="margin:10px; font-size:14px;">Posted by <a href="{% url 'blog:user_posts' post.author.username %}">{{post.author.username}}</a> on {{post.date}}</p>
-{#          Changed from post.author as post.author is now a User object. #}
-
-{#          If user id is 1 then they can see the delete button #}
-            {% comment %} {% if user.id == 1 %}
-                <a href="">✘</a>
-            {% endif %} {% endcomment %}
-        </div>
+          <div class="post-preview form-group shadow p-3 mb-4 bg-body rounded">
+              <a href="{% url 'blog:post_detail' post.pk %}" style="text-decoration:none">
+                  <h2 class="post-title" style="margin:10px">
+                    {{post.title}}
+                  </h2>
+                  <h3 class="post-subtitle" style="margin:10px">
+                    {{post.subtitle}} 
+                  </h3>
+              </a>
+              <small style="margin:10px;"><a href="{% url 'blog:categories' post.category %}">{{post.category|title}}</a></small>
+              <p class="post-meta" style="margin:10px; font-size:14px;">Posted by <a href="{% url 'blog:user_posts' post.author.username %}">{{post.author.username}}</a> on {{post.date}}</p>
+          </div>
         {% endfor %}
+
+        {% if not posts %}
+            <p>No posts to show</p>
+        {% endif %}
 
 
         <!-- New Post -->

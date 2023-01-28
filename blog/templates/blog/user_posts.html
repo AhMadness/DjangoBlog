@@ -45,7 +45,13 @@
               <div class="card-body">
                 <hS class="card-title"><strong>{{ host.first_name|title }} {{host.last_name|title }}</strong>  <a style="text-decoration:none; color:grey;"> @{{host.username}}</a></hs>
                   <br>
-                <p class="card-text" style="margin-top:15px; margin-bottom:10px;">{{ host.userprofile.bio }}</p>
+                  <ul style="padding-left:0;">
+                    <li style="font-size:12px; display:inline-block; padding-right:20px">{{ num_posts }} Posts</li>
+                    <li style="font-size:12px; display:inline-block; padding-right:20px"><a style="text-decoration: none" href="{% url 'blog:followers' host.username %}">{{num_followers}} Followers</a></li>
+                    <li style="font-size:12px; display:inline-block; padding-right:20px"><a style="text-decoration: none" href="{% url 'blog:following' host.username %}">{{num_following}} Following</a></li>
+                  </ul>
+                  
+                <p class="card-text" style="margin-top:15px; margin-bottom:10px; font-size:16px;">{{ host.userprofile.bio }}</p>
                       {% comment %} <p class="small text-muted"> {% endcomment %}
                           {% comment %} {% if post.author.profile.website %}
                               <a href="{{ post.author.profile.website }}">Website |</a>
@@ -54,9 +60,18 @@
                       {% comment %} </p> {% endcomment %}
                 {% if user.username == host.username %}
                   <a href="{% url 'edit_profile' %}" class="btn btn-primary" style="float:right; position:absolute; right:0; bottom:0; margin:8px;">Edit Profile</a>
+                {% else%}
+                  <form method="POST">
+                    {% csrf_token %}
+                    {% if user.userprofile in host.userprofile.followers.all %}
+                      <button href="" class="btn btn-outline-danger" name="follow" value="unfollow" type="submit" style="float:right; position:absolute; right:0; bottom:0; margin:8px;">Unfollow</button>
+                    {% else %}
+                      <button href="" class="btn btn-outline-primary" name="follow" value="follow" type="submit" style="float:right; position:absolute; right:0; bottom:0; margin:8px;">Follow</button>
+                    {% endif %}
+                  </form>
                 {% endif %}
               </div>
-              <p class="md-7" style="margin:0px 0px 10px 16px; position:absolute; bottom:0; color:grey; font-size:14px;">Joined on {{host.date_joined}}</p>       
+              <p class="md-7" style="margin:0px 0px 10px 16px; position:absolute; bottom:0; color:grey; font-size:12px;">Joined on {{host.date_joined}}</p>       
             </div>
           </div>
         </div>

@@ -10,7 +10,7 @@ from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from blog.models import BlogPost, CommentPost
+from blog.models import BlogPost, CommentPost, UserProfile
 from .forms import UserRegisterForm, CommentForm, PostForm, EditProfileForm, ChangePasswordForm, ProfileForm, ContactForm
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
@@ -28,9 +28,18 @@ from django.core.mail import send_mail
 class HomeView(ListView):
     template_name = "blog/home.html"
     model = BlogPost
-    queryset = BlogPost.objects.all()
+    # queryset = BlogPost.objects.all()
     context_object_name = "posts"
     ordering = ["-date"]  # "-id" also works since latest post id is equal to previous post id + 1
+    
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return BlogPost.objects.all().order_by("-date")
+        else:
+            following = self.request.user.userprofile.following.all()
+            following_users = User.objects.filter(userprofile__in=following)
+            # return BlogPost.objects.filter(author__in=following_users)
+            return BlogPost.objects.filter(Q(author__in=following_users) | Q(author=self.request.user)).order_by("-date")
         
 # ABOUT
 
@@ -176,11 +185,77 @@ def CategoryView(request, genre):
     return render(request, "blog/categories.html", {"genre":genre, "list_by_category":list_by_category})
 
 
+# PROFILE
 def ProfileView(request, username):
-    # all_categories = [category[1] for category in BlogPost.choices]
     user_posts = BlogPost.objects.filter(author__username=username).order_by("-date")
+    num_posts = user_posts.count()
     host = User.objects.get(username=username)
-    return render(request, "blog/user_posts.html", {"username":username, "user_posts":user_posts, "host":host})
+    if request.user.is_authenticated:
+        current_user = request.user.userprofile
+    num_followers = host.userprofile.followers.count()
+    num_following = host.userprofile.following.count()
+    if request.method == "POST":
+        action = request.POST["follow"]
+        if action == "unfollow":
+            user_profile = UserProfile.objects.get(user__username=username)
+            current_user.following.remove(user_profile)
+        elif action == "follow":
+            user_profile = UserProfile.objects.get(user__username=username)
+            current_user.following.add(user_profile)
+        return redirect("blog:user_posts", host.username)
+    return render(request, "blog/user_posts.html", {"username":username, "user_posts":user_posts, "host":host, 'num_posts':num_posts, 'num_followers':num_followers, 'num_following':num_following})
+
+# FOLLOWERS
+
+def FollowersView(request, username):
+    host = User.objects.get(username=username)
+    host_profile = UserProfile.objects.get(user=host)
+    followers = host_profile.followers.all()
+    current_user = request.user.userprofile
+
+    for follower in followers:
+        follower.num_posts = BlogPost.objects.filter(author=follower.user).count()
+        follower.num_followers = follower.user.userprofile.followers.count()
+        follower.num_following = follower.user.userprofile.following.count()
+        
+    if request.method == "POST":
+        action = request.POST.get("follow")
+        follower_id = request.POST.get("follower_id")
+        follower_user = UserProfile.objects.get(id=follower_id)
+        if action == "unfollow":
+            current_user.following.remove(follower_user)
+        elif action == "follow":
+            current_user.following.add(follower_user)
+        current_user.save()
+        return redirect("blog:followers", host.username)
+
+    return render(request, "blog/followers.html", {"username":username, "host":host, "followers": followers, "current_user": current_user})
+
+# FOLLOWING
+
+def FollowingView(request, username):
+    host = User.objects.get(username=username)
+    host_profile = UserProfile.objects.get(user=host)
+    following = host_profile.following.all()
+    current_user = request.user.userprofile
+
+    for follows in following:
+        follows.num_posts = BlogPost.objects.filter(author=follows.user).count()
+        follows.num_followers = follows.user.userprofile.followers.count()
+        follows.num_following = follows.user.userprofile.following.count()
+
+    if request.method == "POST":
+        action = request.POST.get("follow")
+        following_id = request.POST.get("following_id")
+        following_user = UserProfile.objects.get(id=following_id)
+        if action == "unfollow":
+            current_user.following.remove(following_user)
+        elif action == "follow":
+            current_user.following.add(following_user)
+        current_user.save()
+        return redirect("blog:following", host.username)
+
+    return render(request, "blog/following.html", {"username":username, "host":host, "following": following, "current_user": current_user})
 
 
 # LIKE

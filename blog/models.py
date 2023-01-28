@@ -18,8 +18,8 @@ class UserProfile(models.Model):
     pfp = models.ImageField(verbose_name='Profile Picture', blank=True, null=True, upload_to="images/profile")
     bg = models.ImageField(verbose_name='Background Image', blank=True, null=True, upload_to="images/background")
 
-    # For following 
-    # follows = models.ManyToManyField("self", related_name="followed_by", blank=True, symmetrical=False,)  # if symmetrical is True it means that both must follow each other, as in the case of "add friend"
+    # For following and followers (related_name=followers automatically is opposite of following, all we need to do is reference related_name)
+    following = models.ManyToManyField("self", related_name="followers", blank=True, symmetrical=False,)  # if symmetrical is True it means that both must follow each other, as in the case of "add friend"
     
     # For website display
     # website = models.CharField(max_length=64, null=True, blank=True)

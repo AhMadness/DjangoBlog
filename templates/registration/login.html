@@ -25,11 +25,12 @@
         <div class="form-group shadow p-4 mb-5 bg-body rounded">
           
           {% if messages %}
-            <ul class="messages">
-              {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><small style="color:limeGreen;">{{ message }}</small></li>
-              {% endfor %}
-            </ul>
+            {% for message in messages %}
+              {% comment %} <span{% if message.tags %} class="{{ message.tags }}"{% endif %}><small style="color:limeGreen;">{{ message }}</small></span> {% endcomment %}
+              <div class="alert alert-success" role="alert">
+                <span{% if message.tags %} class="{{ message.tags }}"{% endif %}><small style="color:limeGreen;">{{ message }}</small></span>
+              </div>
+            {% endfor %}
           {% endif %}
           
           <form method="post">

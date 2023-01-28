@@ -1,0 +1,79 @@
+{% extends 'blog/base.html' %} 
+{% load static %}
+
+{% block title %}{{ user.username|title }} | {% endblock %}
+
+{% block content %}
+  <!-- Page Header -->
+  {% if host.userprofile.bg %} 
+    <header class="masthead" style="background-image: url({{ host.userprofile.bg.url }})">
+  {% else %}
+    <header class="masthead" style="background-image: url({% static 'images/default_bg.png' %})">
+  {% endif %}
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="site-heading">
+            <h1>{{ host.username|title }}'s Profile</h1>
+            {% if user.username == host.username %}
+              <span class="subheading">{{user.first_name|title}}'s Following</span>
+            {% else %}
+              <span class="subheading">Viewing {{host.first_name|title}}'s Following</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7 col-md-10 mx-auto">
+        {% for follows in following %}
+        <div class="card mb-3" style="height:100px; width: 600px;">
+          <div class="row no-gutters">
+            <div class="col-md-2" style="text-align:center; padding-right:0">
+              <a href="{% url 'blog:user_posts' follows.user.username %}">
+              {% if follows.pfp %} 
+                  <img class="rounded-circle mt-2" style="margin:10px 10px 0 !important" src="{{follows.pfp.url}}" alt="avatar" width="65" height="65" />
+              {% else %}
+                  <img class="rounded-circle mt-2" style="margin:10px 10px 0 !important" src="{% static 'images/default_img.jpg' %}" alt="avatar" width="65" height="65" />
+              {% endif %}
+              </a>
+            </div>
+            <div class="col-md-6" style="padding-left:0;">
+              <div class="card-body" style="padding-left:0">
+                <hS class="card-title"><strong>{{ follows.user.first_name|title }} {{follows.user.last_name|title }}</strong>  <a href="{% url 'blog:user_posts' follows.user.username %}" style="text-decoration:none; color:grey;"> @{{ follows.user.username }}</a></hs>
+                  <br>
+                  <ul style="padding-left:0;">
+                    <li style="font-size:12px; display:inline-block; padding-right:20px">{{ follows.num_posts }} Posts</li>
+                    <li style="font-size:12px; display:inline-block; padding-right:20px"><a style="text-decoration: none">{{follows.num_followers}} Followers</a></li>
+                    <li style="font-size:12px; display:inline-block; padding-right:20px"><a style="text-decoration: none">{{follows.num_following}} Following</a></li>
+                  </ul>
+                  {% if request.user != follows.user %}
+                  <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="following_id" value="{{follows.user.userprofile.id}}">
+                    {% if request.user.userprofile in follows.user.userprofile.following.all %}
+                      <button href="" class="btn btn-outline-danger" name="follow" value="unfollow" type="submit" style="float:right; position:absolute; right:0; bottom:0; margin-right:20px; margin-bottom:24px;">Unfollow</button>
+                    {% else %}
+                      <button href="" class="btn btn-outline-primary" name="follow" value="follow" type="submit" style="float:right; position:absolute; right:0; bottom:0; margin-right:20px; margin-bottom:24px;;">Follow</button>
+                    {% endif %}
+                  </form>
+                  {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        <a class="btn btn-primary float-right" style="float: right;" href="{% url 'blog:user_posts' host.username %}">Back</a>
+      </div>
+    </div>
+  </div>
+  <br>
+  <hr>
+  
+{% endblock %}
+
+  
